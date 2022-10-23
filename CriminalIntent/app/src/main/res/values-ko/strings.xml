@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">범죄기록부</string>
+    <string name="crime_title_hint">범죄 제목을 입력하세요!</string>
+    <string name="crime_title_label">제목</string>
+    <string name="crime_details_label">상세사항</string>
+    <string name="crime_solved_label">해결</string>
+
+    <!--  menu  -->
+    <string name="new_crime">새로운 사건</string>
+
+    <!--  Explicit Intent String  -->
+    <string name="crime_suspect_text">범죄자 선택</string>
+    <string name="crime_report_text">범죄기록부 보내기</string>
+
+    <!--  related report  -->
+<!--    <string name="crime_report">%1$s!-->
+<!--    이 범죄는 %2$s에 해결되었습니다. %3$s, 그리고 %4$s</string>-->
+    <string name="crime_report_solved">이 사건은 해결되었습니다.</string>
+    <string name="crime_report_unsolved">이 사건은 해결되지 않았습니다.</string>
+    <string name="crime_report_no_subject">여기엔 범죄자가 없습니다.</string>
+    <string name="crime_report_subject">범죄자는 %s.</string>
+    <string name="send_report">범죄기록부 공유하기 </string>
+</resources>
