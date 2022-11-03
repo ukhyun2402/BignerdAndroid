@@ -5,22 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.wookhyun.photogallery.databinding.ListItemGalleryBinding
 
+private const val TAG = "PhotoListAdapter"
 class PhotoListAdapter(
-    private val galleryItems: List<GalleryItem>
+    private val photoGalleryViewModel: PhotoGalleryViewModel
 ) : RecyclerView.Adapter<PhotoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
-        // 1. get inflater from parent
-        // 2. inflate item view
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemGalleryBinding.inflate(inflater, parent, false)
         return PhotoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        val item = galleryItems[position]
+        val item = photoGalleryViewModel.galleryItems.value[position]
         holder.bind(item)
+
+        if(position == photoGalleryViewModel.galleryItems.value.size - 1) {
+            photoGalleryViewModel.fetchNextPhotos()
+        }
     }
 
-    override fun getItemCount() = galleryItems.size
+    override fun getItemCount() = photoGalleryViewModel.galleryItems.value.size
 }
