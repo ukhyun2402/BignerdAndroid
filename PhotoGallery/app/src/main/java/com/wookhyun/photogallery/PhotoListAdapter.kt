@@ -17,13 +17,13 @@ class PhotoListAdapter(
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        val item = photoGalleryViewModel.galleryItems.value[position]
+        val item = photoGalleryViewModel.uiState.value.image[position]
         holder.bind(item)
 
-        if(position == photoGalleryViewModel.galleryItems.value.size - 1) {
+        if(position == photoGalleryViewModel.uiState.value.image.size - 1) {
             photoGalleryViewModel.fetchNextPhotos()
         }
     }
 
-    override fun getItemCount() = photoGalleryViewModel.galleryItems.value.size
+    override fun getItemCount() = photoGalleryViewModel.uiState.value.image.size
 }

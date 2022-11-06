@@ -1,14 +1,17 @@
 package com.wookhyun.photogallery
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
+import java.util.*
+import java.util.logging.Handler
 import javax.inject.Inject
 
 private const val TAG = "PhotoGalleryViewModel"
@@ -16,22 +19,34 @@ private const val TAG = "PhotoGalleryViewModel"
 @HiltViewModel
 class PhotoGalleryViewModel @Inject constructor(
     private val photoRepository: PhotoRepository,
-    private val preferenceRepository: PreferenceRepository
+    val preferenceRepository: PreferenceRepository
 ) : ViewModel() {
 
-    private val _galleryItems: MutableStateFlow<List<GalleryItem>> = MutableStateFlow(emptyList())
-    val galleryItems: StateFlow<List<GalleryItem>>
-        get() = _galleryItems.asStateFlow()
+    private val _uiState: MutableStateFlow<PhotoGalleryUiState> =
+        MutableStateFlow(PhotoGalleryUiState())
+    val uiState: StateFlow<PhotoGalleryUiState>
+        get() = _uiState.asStateFlow()
+
     var currentPage = 1
+    var loadingState: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         viewModelScope.launch {
             preferenceRepository.storedQuery.collectLatest { storedQuery ->
                 try {
-                    val items = fetchGalleryItems(storedQuery)
-                    _galleryItems.value = items
+                    loadingState.value = true
+                    val items = fetchGalleryItems(storedQuery).toMutableList()
+                    _uiState.update { oldState ->
+                        oldState.copy(
+                            image = items,
+                            query = storedQuery
+                        )
+                    }
+                    delay(2000)
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to fetch Data: $e")
+                } finally {
+                    loadingState.value = false
                 }
             }
         }
@@ -40,8 +55,7 @@ class PhotoGalleryViewModel @Inject constructor(
     fun fetchNextPhotos() {
         viewModelScope.launch {
             if (currentPage < 5) {
-                _galleryItems.value += photoRepository.fetchPhotos(++currentPage)
-                Log.d(TAG, "fetchNextPhotos: current galliery size = ${galleryItems.value.size}")
+                _uiState.value.image += photoRepository.fetchPhotos(++currentPage)
             }
         }
     }
@@ -60,3 +74,7 @@ class PhotoGalleryViewModel @Inject constructor(
         }
     }
 }
+
+data class PhotoGalleryUiState(
+    val image: MutableList<GalleryItem> = mutableListOf<GalleryItem>(), val query: String = ""
+)

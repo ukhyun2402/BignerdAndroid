@@ -2,6 +2,7 @@ package com.wookhyun.photogallery
 
 import FlickrAPI
 import android.util.Log
+import java.lang.Thread.sleep
 import javax.inject.Inject
 
 private const val TAG = "PhotoRepository"
@@ -17,7 +18,7 @@ class PhotoRepository  constructor(
 
     suspend fun searchPhotos(query: String): List<GalleryItem> {
         val response =  flickrAPI.searchPhotos(query).photos.galleryItems
-        Log.d(TAG, "searchPhotos: $response")
+//        Log.d(TAG, "searchPhotos: $response")
         return response
     }
 
