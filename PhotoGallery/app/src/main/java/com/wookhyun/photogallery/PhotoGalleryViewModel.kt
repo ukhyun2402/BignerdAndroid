@@ -18,7 +18,7 @@ private const val TAG = "PhotoGalleryViewModel"
 
 @HiltViewModel
 class PhotoGalleryViewModel @Inject constructor(
-    private val photoRepository: PhotoRepository,
+    val photoRepository: PhotoRepository,
     val preferenceRepository: PreferenceRepository
 ) : ViewModel() {
 

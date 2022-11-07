@@ -3,4 +3,5 @@
 | 날짜       | 프로젝트     | 기능                                                                 | 진행상황 |
 | :--------- | ------------ | :------------------------------------------------------------------- | :------: |
 | 2022-11-04 | PhotoGallery | - PreferenceDataStore, Hilt적용</br> - API_KEY BuildConfig 적용      |    O     |
-| 2022-11-04 | PhotoGallery | - LiveData를 이용한 동적 View(ProgressBar)</br> - InputMethodManager |    O     |
+| 2022-11-06 | PhotoGallery | - LiveData를 이용한 동적 View(ProgressBar)</br> - InputMethodManager |    O     |
+| 2022-11-07 | PhotoGallery | - WorkManager Hilt 적용                                              |    O     |

@@ -25,21 +25,18 @@ class PreferenceRepository(
         }
     }
 
+    val lastResultId: Flow<String> = datastore.data.map {
+        it[PREF_LAST_RESULT_ID] ?: ""
+    }
+
+    suspend fun setLastResultId(lastResultId: String) {
+        datastore.edit {
+            it[PREF_LAST_RESULT_ID] = lastResultId
+        }
+    }
+
     companion object {
         private val SEARCH_QUERY_KEY = stringPreferencesKey("search_query")
-//        private var INSTANCE: PreferenceRepository? = null
-//
-//        fun initialize(context: Context) {
-//            if (INSTANCE == null) {
-//                val datastore = PreferenceDataStoreFactory.create {
-//                    context.preferencesDataStoreFile("settings")
-//                }
-//                INSTANCE = PreferenceRepository(datastore)
-//            }
-//        }
-//
-//        fun get(): PreferenceRepository {
-//            return INSTANCE ?: throw IllegalStateException("PreferenceRepository must be initialized")
-//        }
+        private val PREF_LAST_RESULT_ID = stringPreferencesKey("lastResultId")
     }
 }

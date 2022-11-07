@@ -17,9 +17,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.work.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.wookhyun.photogallery.databinding.FragmentPhotoGalleryBinding
+import com.wookhyun.photogallery.worker.PollWorker
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.delay
@@ -64,6 +66,14 @@ class PhotoGalleryFragment : Fragment() {
             }
         }
         photoGalleryViewModel.loadingState.observe(this, loadingObserver)
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .build()
+
+        val workRequest =
+            OneTimeWorkRequestBuilder<PollWorker>().setConstraints(constraints).build()
+        WorkManager.getInstance(requireContext()).enqueue(workRequest)
     }
 
     override fun onCreateView(
@@ -80,7 +90,7 @@ class PhotoGalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 photoGalleryViewModel.uiState.collect { state ->
                     binding.photoGrid.adapter?.notifyDataSetChanged()
                     searchView?.setQuery(state.query, false)
